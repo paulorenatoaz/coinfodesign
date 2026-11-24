@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coinfodesign"
+version = "1.0.0"
+description = "Generating-function reliability design over previously evaluated predictor subsets"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Paulo Renato Azevedo" }]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+coinfodesign = "coinfodesign.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

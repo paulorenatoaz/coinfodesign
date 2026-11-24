@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use CoInfoDesign for published research, please cite this repository."
+title: "CoInfoDesign: Generating-Function Reliability Design Over Previously Evaluated Predictor Subsets"
+version: 1.0.0
+authors:
+  - family-names: "Azevedo"
+    given-names: "Paulo Renato"
+    affiliation: "PPGI/UFRJ"
+url: https://github.com/paulorenatoaz/coinfodesign
+license: GPL-3.0-or-later
+keywords:
+  - reliability engineering
+  - generating functions
+  - sensor subset selection
+  - predictive cooperation
+references:
+  - type: software
+    title: "CoInfoSim: A Simulator for Predictive Cooperation Across Attribute Subsets"
+    authors:
+      - family-names: "Azevedo"
+        given-names: "Paulo Renato"
+    url: https://github.com/paulorenatoaz/coinfosim
+    license: GPL-3.0-or-later
+  - type: dataset
+    title: "Air Quality"
+    authors:
+      - family-names: "Vito"
+        given-names: "Saverio"
+    url: https://doi.org/10.24432/C59K5F
+    notes: "UCI Machine Learning Repository, DOI 10.24432/C59K5F. Research-only use per dataset description."
