@@ -221,9 +221,6 @@ def generate(out_dir: Path, payload: dict, build_commit: str, computed_cases: li
     chart, legend = _chart(cases, selected)
     source = payload["source"]
     source_path = PINNED_URL_PREFIX.split(f'/{source["commit"]}/')[1].rstrip("/")
-    code_url = CODE_REPO
-    if re.fullmatch(r"[0-9a-f]{12,40}", build_commit):
-        code_url += f"/tree/{build_commit}"
 
     # The existing formula renderers also serve the machine-readable exports.
     # The report alone adds line-breaking opportunities.
@@ -255,7 +252,7 @@ def generate(out_dir: Path, payload: dict, build_commit: str, computed_cases: li
         source_url=f'https://github.com/{source["repo"]}/tree/{source["commit"]}/{source_path}',
         loss_url=PINNED_URL_PREFIX + LOSS_FILENAME,
         metadata_url=PINNED_URL_PREFIX + METADATA_FILENAME,
-        code_url=code_url,
+        code_url=f"{CODE_REPO}#build",
         build_id=escape(build_commit),
     )
     (out_dir / "index.html").write_text(html, encoding="utf-8")
