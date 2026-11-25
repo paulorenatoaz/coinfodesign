@@ -20,6 +20,8 @@ def test_build_produces_expected_layout(built_site):
     assert (out / "LICENSE").is_file()
     assert (out / "ATTRIBUTION.md").is_file()
     assert (out / "CITATION.cff").is_file()
+    assert (out / "assets" / "fonts" / "SourceSerif4-Roman.woff2").is_file()
+    assert (out / "assets" / "fonts" / "OFL-SourceSans3.txt").is_file()
     assert payload["case_count"] == 40
 
 
@@ -37,7 +39,7 @@ def test_site_is_a_single_unified_page_not_two_experiences(built_site):
     assert html.count('id="tau-select"') == 1
 
 
-def test_table_rows_are_clickable_and_carry_scenario_keys(built_site):
+def test_table_has_separate_case_selection_and_disclosure_buttons(built_site):
     out, payload = built_site
     html = (out / "index.html").read_text(encoding="utf-8")
     for case in payload["cases"]:
@@ -45,7 +47,10 @@ def test_table_rows_are_clickable_and_carry_scenario_keys(built_site):
         assert f'id="row-{key}"' in html
         assert f'data-n="{case["n_per_class"]}"' in html
         assert f'id="r-cell-{key}"' in html
-    assert 'tabindex="0"' in html
+        assert f'aria-controls="detail-{key}"' in html
+        assert f'id="detail-{key}" hidden' in html
+    assert html.count('type="button" class="choose"') == 40
+    assert html.count('type="button" class="details-btn"') == 40
 
 
 def test_app_js_has_reactive_wiring(built_site):
