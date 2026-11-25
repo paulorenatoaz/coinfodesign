@@ -11,8 +11,7 @@ then renders a single reactive report: one shared set of controls (`n`, `τ`,
 and five independent sensor-availability probabilities) drives an overview
 chart, a scenario analysis panel, and the full 40-case table together.
 
-**Live site:** _pending first successful Pages deployment — will be filled in
-once published (see step 4 of the project's execution plan)._
+**Live site:** https://paulorenatoaz.github.io/coinfodesign/
 
 ## What this does and does not do
 
