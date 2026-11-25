@@ -195,6 +195,7 @@ button { cursor: pointer; }
 footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; }
 footer a { color: var(--accent); }
 sup, sub { line-height: 0; }
+code { overflow-wrap: anywhere; word-break: break-all; }
 """
 
 
