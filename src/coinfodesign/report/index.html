@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>CoInfoDesign · Quando faltam sensores</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#introducao">Ir ao conteúdo</a>
+<header class="mast">
+  <div class="shell mast-inner">
+    <a href="#inicio" class="wordmark" aria-label="CoInfoDesign, início"><span class="mark" aria-hidden="true">∑</span>CoInfo<span>Design</span></a>
+    <span class="course">ICP747 <span>/</span> Álgebra para Programação</span>
+    <span class="inst">PPGI <span>/</span> UFRJ</span>
+  </div>
+</header>
+<main id="inicio">
+  <div class="shell opening">
+    <div class="cover">
+      <div class="eyebrow rule-before">Funções geradoras · relatório interativo</div>
+      <h1>Quando faltam<br><em>sensores</em></h1>
+      <p class="deck">Se uma estação perde parte das leituras, qual é a probabilidade de ainda haver um classificador que atenda à tolerância de perda?</p>
+      <p class="byline">Paulo Azevedo <span>·</span> UCI Air Quality <span>·</span> SVM linear</p>
+      <a class="jump" href="#laboratorio">Explorar o laboratório <span aria-hidden="true">↓</span></a>
+    </div>
+    <figure class="plate" aria-labelledby="plate-heading">
+      <div class="figtop"><span class="eyebrow">Figura 1</span><span id="plate-case" class="case-tag">$case_label</span></div>
+      <h2 id="plate-heading">Quais estados têm sucesso?</h2>
+      $dotplot
+      <div class="x-caption">Número de sensores disponíveis, <i>k</i></div>
+      <div class="dot-legend"><span><i class="dot good" aria-hidden="true"></i> Sucesso</span><span><i class="dot" aria-hidden="true"></i> Insucesso</span></div>
+      <figcaption>Cada ponto conta um estado. Neste cenário, <b id="plate-count">$states dos 32 estados</b> contêm um preditor aceitável. As probabilidades entram no cálculo de <i>R</i>.</figcaption>
+    </figure>
+  </div>
+
+  <nav class="contents" aria-label="Sumário">
+    <div class="shell nav-inner">
+      <a href="#introducao">Contexto</a><a href="#fundamentos">Fundamentação</a><a href="#laboratorio">Laboratório</a><a href="#cenario">Cenário</a><a href="#panorama">Gráfico</a><a href="#tabela">Tabela</a><a href="#metodo">Fontes</a>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <section id="introducao" class="section">
+      <div class="section-title"><span class="num">01</span><h2>O que conta como sucesso?</h2></div>
+      <div class="reading">
+        <div class="bodycopy">
+          <p>Na estação do conjunto <em>Air Quality</em>, cinco sinais de sensores registram respostas associadas a CO, NMHC, NO<sub>x</sub>, NO<sub>2</sub> e O<sub>3</sub>. O experimento usa esses sinais para classificar a concentração de benzeno. Se um canal fica indisponível, ainda é possível recorrer a um classificador treinado para outros canais.</p>
+          <p>O CoInfoSim avaliou os 31 subconjuntos não vazios dos cinco sensores. Para cada tamanho de treinamento, conhecemos a perda média de teste de cada subconjunto. O CoInfoDesign pergunta quais desses preditores continuam utilizáveis quando apenas parte dos sensores está disponível.</p>
+        </div>
+        <aside class="margin-note">
+          <h3>Cenário de sala de aula</h3>
+          <p>Com 512 exemplos por classe e tolerância de 10%, S<sub>2</sub> sozinho basta. Se apenas S<sub>1</sub> e S<sub>4</sub> estiverem disponíveis, o preditor desse par também atende à tolerância.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="fundamentos" class="section">
+      <div class="section-title"><span class="num">02</span><h2>Da perda à probabilidade</h2></div>
+      <div class="methods">
+        <div>
+          <h3>Selecionar os preditores</h3>
+          <p>Seja <i>A</i> o conjunto disponível e <i>T</i> um subconjunto não vazio já avaliado. Para <i>n</i> exemplos de treino por classe, a perda empírica média de teste <i>L̄</i><sub>n</sub>(<i>T</i>) mede a fração média de erros pela perda 0–1. O estado <i>A</i> tem sucesso se contiver algum <i>T</i> cuja perda seja menor ou igual à tolerância <i>τ</i>, mesmo quando o preditor que usa todo <i>A</i> ultrapassa essa tolerância.</p>
+          <div class="method-eq equation"><span class="atom">T ⊆ A</span> <span class="and">e</span> <span class="atom">L̄<sub>n</sub>(T) ≤ τ</span></div>
+        </div>
+        <div>
+          <h3>Registrar os estados</h3>
+          <p>Cada estado da família de sucesso <i>Ω</i> contribui com um monômio de coeficiente 1. A indeterminada <i>x</i><sub>i</sub> registra a presença de S<sub>i</sub>. Ao igualar todas as indeterminadas a <i>x</i>, o coeficiente <i>a</i><sub>k</sub> conta os estados de sucesso com exatamente <i>k</i> sensores disponíveis.</p>
+          <div class="method-eq equation">
+            <span class="atom">H(<b>x</b>) = <span class="op">∑<sub>A ∈ Ω</sub></span> <span class="op">∏<sub>i ∈ A</sub></span> x<sub>i</sub></span><br>
+            <span class="atom">H(x, …, x) = <span class="op">∑<sub>k = 0 a 5</sub></span> a<sub>k</sub>x<sup>k</sup></span>
+          </div>
+        </div>
+        <div>
+          <h3>Pesar cada estado</h3>
+          <p>Para disponibilidades independentes, <i>p</i><sub>i</sub> é a probabilidade de S<sub>i</sub> estar disponível. Multiplicamos as probabilidades de presença e ausência para obter o peso <i>P</i>(<i>A</i>). Se for possível escolher um preditor aceitável quando houver um disponível, a confiabilidade <i>R</i> é a soma dos pesos dos estados de <i>Ω</i>.</p>
+          <div class="method-eq equation">
+            <span class="atom">R(<b>p</b>) = <span class="op">∑<sub>A ∈ Ω</sub></span> P(A)</span><br>
+            <span class="atom">P(A) = <span class="op">∏<sub>i ∈ A</sub></span> p<sub>i</sub></span> <span class="atom"><span class="op">∏<sub>i ∉ A</sub></span> (1−p<sub>i</sub>)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="laboratorio" class="section">
+      <div class="section-title"><span class="num">03</span><h2>Laboratório interativo</h2></div>
+      <p class="intro">Escolha o cenário empírico e atribua uma disponibilidade a cada sensor. A mesma escolha alimenta as figuras, a análise e a tabela.</p>
+      <p id="lab-error" class="error-banner" role="alert" hidden></p>
+      <noscript><p class="error-banner">Ative o JavaScript para alterar o cenário e as disponibilidades. O cenário inicial e a tabela continuam disponíveis para leitura.</p></noscript>
+      <div class="control-panel" id="controls">
+        <div class="parameters">
+          <h3>Cenário empírico</h3>
+          <label for="n-select">Amostra por classe <i>n</i></label>
+          <select id="n-select" disabled>$n_options</select>
+          <label for="tau-select">Tolerância de perda <i>τ</i></label>
+          <select id="tau-select" disabled>$tau_options</select>
+          <p>Alterar <i>n</i> muda as perdas consultadas. Para um mesmo <i>n</i>, aumentar <i>τ</i> só pode acrescentar estados de sucesso.</p>
+        </div>
+        <div class="availability">
+          <h3>Disponibilidade dos sensores</h3>
+          $sliders
+          <div class="presets">
+            <span>Predefinições</span>
+            <button type="button" id="preset-all90" disabled>Todos a 90%</button>
+            <button type="button" id="preset-mixed" disabled>Perfil misto</button>
+          </div>
+          <p class="small">O perfil misto usa 90%, 70%, 90%, 40% e 90%, de S<sub>1</sub> a S<sub>5</sub>. Os percentuais são hipóteses de operação.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cenario" class="section">
+      <div class="section-title"><span class="num">04</span><h2>Análise do cenário selecionado</h2></div>
+      <div id="result-band" class="result-band">
+        <div><div class="eyebrow">Confiabilidade do sistema</div><div id="lab-r-value" class="big">$reliability</div></div>
+        <div>
+          <b id="current-case">$case_label</b>
+          <p>Probabilidade de estar disponível pelo menos um preditor que atende à tolerância de perda.</p>
+          <a id="to-current" href="#row-$case_key">Ver este caso na tabela <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <p id="announce" role="status" class="sr"></p>
+      <div id="analysis">
+        <div class="step">
+          <h3>Condição de sucesso</h3>
+          <div>
+            <div id="lab-condition" class="equation">$condition</div>
+            <p id="condition-note">$condition_note</p>
+          </div>
+        </div>
+        <div class="step">
+          <h3>Função geradora geral</h3>
+          <div>
+            <div id="lab-structured-canonical" class="equation"><span class="eqlead">H(x<sub>1</sub>, …, x<sub>5</sub>) =</span> $h_structured</div>
+            <p>A forma estruturada registra a família de sucesso para este par de <i>n</i> e <i>τ</i>. Alterar disponibilidades preserva essa família e seu polinômio geral.</p>
+          </div>
+        </div>
+        <div class="step" id="lab-specialization">
+          <h3 id="specialization-title">Especialização univariada</h3>
+          <div>
+            <p id="group-note">Os cinco percentuais são iguais. As cinco indeterminadas passam a ser representadas por <i>x</i>.</p>
+            <div id="lab-structured-grouped" class="equation">
+              <span class="exprlabel">Forma estruturada</span>$h_equal_structured
+            </div>
+            <div id="lab-expanded-grouped" class="equation" hidden></div>
+            <div id="lab-univariate" class="equation">
+              <span class="exprlabel">Expansão da especialização e projeção univariada</span><span class="eqlead">H(x) =</span> $h_univariate
+            </div>
+            <p id="univariate-note">Cada coeficiente <i>a</i><sub>k</sub> conta estados com <i>k</i> sensores disponíveis.</p>
+          </div>
+        </div>
+        <div class="step">
+          <h3>Avaliação da confiabilidade</h3>
+          <div>
+            <div id="lab-r-formula-label" class="equation">
+              <span class="eqlead">R(p) =</span> <span class="atom"><span class="op">∑<sub>k = 0 a 5</sub></span> a<sub>k</sub>p<sup>k</sup>(1−p)<sup>5−k</sup></span>
+            </div>
+            <p id="evaluation-note">Com <i>p</i> = 90% para todos os sensores, o peso de cada estado depende apenas de quantos sensores estão disponíveis.</p>
+            <p>Em cada termo entram as probabilidades de presença e de ausência. As variáveis formais de <i>H</i> servem para contar estados.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="panorama" class="section">
+      <div class="section-title"><span class="num">05</span><h2>O efeito da amostra de treinamento</h2></div>
+      <p class="intro">Compare as quatro tolerâncias nos dez tamanhos de treinamento. Mudar a disponibilidade de um sensor altera os pesos dos estados. A confiabilidade pode subir ou descer conforme <i>n</i> muda.</p>
+      <figure class="chart-figure" aria-labelledby="chart-heading">
+        <div class="figtop"><span class="eyebrow">Figura 2</span><span id="chart-case" class="case-tag">$case_label · R = $reliability</span></div>
+        <h3 id="chart-heading">Confiabilidade por tamanho de amostra</h3>
+        <div class="chart-axis">Confiabilidade do sistema, <i>R</i> (%)</div>
+        $chart
+        <div class="x-caption">Exemplos de treinamento por classe, <i>n</i> (escala log<sub>2</sub>)</div>
+        <div class="chart-legend">$legend</div>
+        <figcaption>O anel destaca o cenário selecionado. Cada ponto corresponde a um tamanho avaliado. Os segmentos guiam a leitura entre esses pontos. Séries com o mesmo valor de <i>R</i> podem se sobrepor. <a href="#tabela">Consultar os 40 valores na tabela.</a></figcaption>
+      </figure>
+    </section>
+
+    <section id="tabela" class="section">
+      <div class="section-title"><span class="num">06</span><h2>Os 40 cenários</h2></div>
+      <p class="intro">Selecione um caso pelo botão de <i>n</i> para adotar o tamanho e a tolerância da linha, conservando os cinco percentuais. Abra os detalhes para consultar as formas gerais do polinômio.</p>
+      <div class="tablebar"><span class="eyebrow">Tabela 1</span><span id="table-current">Seleção atual · $case_label</span></div>
+      $cases_table
+      <div class="plateau">
+        <div>
+          <h3>Onde começa o platô terminal?</h3>
+          <p>Para cada <i>τ</i>, o platô começa no menor <i>n</i> da grade cuja família de estados de sucesso permanece exatamente igual em todos os tamanhos avaliados dali até 1024. Essa igualdade equivale à dos polinômios canônicos ou à dos conjuntos mínimos.</p>
+          <p>A igualdade se restringe aos tamanhos avaliados e é compatível com perdas empíricas diferentes.</p>
+        </div>
+        $plateau_table
+      </div>
+    </section>
+
+    <section id="metodo" class="section">
+      <div class="section-title"><span class="num">07</span><h2>Metodologia e proveniência</h2></div>
+      <div class="reading">
+        <div class="bodycopy">
+          <p>A execução $run do CoInfoSim avaliou um SVM linear no braço <code>$arm</code>. Um quantil estimado no treino define a classe de benzeno elevado. Já a tolerância <i>τ</i> determina quais perdas empíricas de teste são aceitáveis. Para <i>n</i> igual a 2 e 4, a execução atingiu o limite de réplicas disponível.</p>
+          <p>O relatório usa as 310 perdas médias publicadas para os dez tamanhos de treino e os 31 subconjuntos. A compilação verifica os dois arquivos de origem pelos seus hashes SHA-256 e compara as perdas com o limite inclusivo em aritmética decimal.</p>
+        </div>
+        <aside class="margin-note">
+          <h3>Como interpretar o percentual</h3>
+          <p>A acurácia mede a fração de acertos no teste. A confiabilidade estima a chance de restar um preditor aceitável sob as disponibilidades hipotéticas escolhidas. O navegador calcula essa chance pelos pesos dos estados de sucesso.</p>
+        </aside>
+      </div>
+      <div class="sources">
+        <div>
+          <h3>Dados e experimento</h3>
+          <a href="https://doi.org/10.24432/C59K5F">Conjunto Air Quality da UCI</a>
+          <p>Saverio Vito (2008) · CC BY 4.0</p>
+          <a href="$source_url">CoInfoSim · execução $run</a>
+          <p>Paulo Renato Azevedo · <code>$arm / $classifier</code><br>Revisão de origem <code>$source_commit</code></p>
+          <div class="source-links"><a href="$loss_url">Perdas de origem (CSV)</a><a href="$metadata_url">Subconjuntos de origem (CSV)</a></div>
+        </div>
+        <div>
+          <h3>Código e reprodução</h3>
+          <a href="$code_url">Código e instruções de reprodução do CoInfoDesign</a>
+          <p>Identificador da compilação <a href="build_id.txt"><code>$build_id</code></a></p>
+          <div class="source-links">
+            <a href="ATTRIBUTION.md">Atribuição e hashes SHA-256</a><a href="CITATION.cff">Como citar (CFF)</a><a href="LICENSE">Licença do código (GPL-3.0-or-later)</a>
+            <a href="data/cases.json" download>Cenários (JSON)</a><a href="data/cases.csv" download>Cenários (CSV)</a>
+            <a href="assets/fonts/OFL-SourceSerif4.txt">Licença da Source Serif 4</a><a href="assets/fonts/OFL-SourceSans3.txt">Licença da Source Sans 3</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer>
+  <div class="shell"><span>CoInfoDesign · ICP747 · Álgebra para Programação · PPGI/UFRJ</span><a href="#inicio">Voltar ao início <span aria-hidden="true">↑</span></a></div>
+</footer>
+</body>
+</html>

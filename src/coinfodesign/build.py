@@ -91,7 +91,7 @@ def build(source: Path | None, out: Path, commit: str) -> dict:
         shutil.rmtree(out)
     out.mkdir(parents=True)
     payload = write_data(cases, out / "data", commit)
-    sitegen.generate(out, payload, commit)
+    sitegen.generate(out, payload, commit, cases)
     repo_root = Path(__file__).resolve().parents[2]
     for name in ("LICENSE", "ATTRIBUTION.md", "CITATION.cff"):
         src_file = repo_root / name
